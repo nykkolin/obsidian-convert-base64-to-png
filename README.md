@@ -48,13 +48,6 @@ This makes your notes smaller, more portable, and easier to work with.
 3. Search for "Convert Base64 to PNG"
 4. Click Install, then Enable
 
-### Manual Installation
-
-1. Download the latest release from the [GitHub releases page](https://github.com/nykkolin/obsidian-convert-base64-to-png/releases)
-2. Extract the files to your Obsidian vault's plugins folder: `.obsidian/plugins/convert-base64-to-png/`
-3. Restart Obsidian
-4. Enable the plugin in Obsidian's settings under "Community plugins"
-
 ## Use Cases
 
 - **Reduce File Size**: Base64-encoded images can make your markdown files very large
