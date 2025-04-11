@@ -1,0 +1,27 @@
+/* Base64 to PNG Plugin Styles */
+
+.base64-to-png-settings {
+  margin-top: 10px;
+}
+
+.base64-to-png-modal {
+  padding: 20px;
+}
+
+.base64-to-png-modal-title {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.base64-to-png-modal-content {
+  margin-bottom: 20px;
+}
+
+.base64-to-png-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.base64-to-png-modal-buttons button {
+  margin-left: 10px;
+}

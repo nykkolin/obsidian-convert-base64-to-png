@@ -1,0 +1,11 @@
+{
+  "id": "convert-base64-to-png",
+  "name": "Convert Base64 to PNG",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Convert base64-encoded images in notes to local PNG files",
+  "author": "Nykko Lin",
+  "authorUrl": "https://github.com/nykkolin",
+  "isDesktopOnly": false,
+  "license": "MIT"
+}
