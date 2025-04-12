@@ -322,23 +322,11 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 		containerEl.createEl('hr');
 
 		const sponsorDiv = containerEl.createDiv('sponsor-container');
-		sponsorDiv.addClass('sponsor-container');
-		sponsorDiv.style.display = 'flex';
-		sponsorDiv.style.flexDirection = 'column';
-		sponsorDiv.style.alignItems = 'center';
-		sponsorDiv.style.marginTop = '1rem';
 
-		const sponsorText = sponsorDiv.createDiv();
+		const sponsorText = sponsorDiv.createDiv('sponsor-text');
 		sponsorText.setText('If you like this Plugin, consider donating to support continued development.');
-		sponsorText.style.marginBottom = '1rem';
-		sponsorText.style.textAlign = 'center';
 
-		const buttonsDiv = sponsorDiv.createDiv();
-		buttonsDiv.style.display = 'flex';
-		buttonsDiv.style.gap = '1rem';
-		buttonsDiv.style.justifyContent = 'center';
-		buttonsDiv.style.flexWrap = 'wrap';
-		buttonsDiv.style.alignItems = 'center';
+		const buttonsDiv = sponsorDiv.createDiv('sponsor-buttons');
 
 		// Ko-fi button
 		const kofiLink = buttonsDiv.createEl('a', {
@@ -348,12 +336,9 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 		kofiLink.setAttribute('rel', 'noopener');
 
 		// Create an image element for Ko-fi
-		const kofiImg = kofiLink.createEl('img');
+		const kofiImg = kofiLink.createEl('img', { cls: 'sponsor-image' });
 		kofiImg.src = 'https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white';
 		kofiImg.alt = 'Support me on Ko-fi';
-		kofiImg.style.height = '38px';
-		kofiImg.style.width = 'auto';
-		kofiImg.style.maxWidth = '160px';
 
 		// Buy Me a Coffee button
 		const bmcLink = buttonsDiv.createEl('a', {
@@ -363,11 +348,8 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 		bmcLink.setAttribute('rel', 'noopener');
 
 		// Create an image element for Buy Me a Coffee
-		const bmcImg = bmcLink.createEl('img');
+		const bmcImg = bmcLink.createEl('img', { cls: 'sponsor-image' });
 		bmcImg.src = 'https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png';
 		bmcImg.alt = 'Buy Me A Coffee';
-		bmcImg.style.height = '38px';
-		bmcImg.style.width = 'auto';
-		bmcImg.style.maxWidth = '160px';
 	}
 }

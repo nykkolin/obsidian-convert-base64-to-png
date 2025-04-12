@@ -25,3 +25,30 @@
 .base64-to-png-modal-buttons button {
   margin-left: 10px;
 }
+
+/* Sponsor section styles */
+.sponsor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.sponsor-text {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.sponsor-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sponsor-image {
+  height: 38px;
+  width: auto;
+  max-width: 160px;
+}
