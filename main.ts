@@ -28,12 +28,6 @@ export default class ConvertBase64ToPNGPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// Add ribbon icon
-		const ribbonIconEl = this.addRibbonIcon('image-file', 'Convert Base64 to PNG', (_: MouseEvent) => {
-			this.convertCurrentFileBase64ToPNG();
-		});
-		ribbonIconEl.addClass('convert-base64-to-png-ribbon-class');
-
 		// Add command to convert base64 images in current file
 		this.addCommand({
 			id: 'convert-base64-to-png-current-file',
