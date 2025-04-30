@@ -22,11 +22,13 @@ jobs:
                   npm install
                   npm run build --if-present
             - name: List files
-              run: ls -la
+              run: |
+                  ls -la
+                  ls -la build
 
             - name: Create Release
               # https://github.com/ncipollo/release-action
               uses: ncipollo/release-action@v1.7.3
               with:
-                  artifacts: "main.js,manifest.json,styles.css"
+                  artifacts: "build/main.js,build/manifest.json,build/styles.css"
                   token: ${{ secrets.GITHUB_TOKEN }}
