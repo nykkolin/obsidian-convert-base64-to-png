@@ -3,6 +3,10 @@ node_modules/
 
 # Build files
 dist/
+build/
+
+# Images folder (not needed as SVGs are embedded)
+images/
 
 # Environment variables
 .env
