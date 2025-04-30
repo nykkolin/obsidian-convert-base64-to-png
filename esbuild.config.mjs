@@ -1,6 +1,7 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
+import copyStaticFiles from 'esbuild-copy-static-files';
 
 const banner =
 `/*
@@ -37,7 +38,21 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
-	outfile: 'main.js',
+	outdir: 'build',
+	plugins: [
+		copyStaticFiles({
+			src: './manifest.json',
+			dest: './build/manifest.json',
+			dereference: true,
+			errorOnExist: false,
+		}),
+		copyStaticFiles({
+			src: './styles.css',
+			dest: './build/styles.css',
+			dereference: true,
+			errorOnExist: false,
+		})
+	]
 });
 
 if (prod) {

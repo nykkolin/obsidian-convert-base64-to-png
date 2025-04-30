@@ -6,6 +6,5 @@
   "description": "Convert base64-encoded images in notes to local PNG files",
   "author": "Nykko Lin",
   "authorUrl": "https://github.com/nykkolin",
-  "isDesktopOnly": false,
-  "license": "MIT"
+  "isDesktopOnly": false
 }

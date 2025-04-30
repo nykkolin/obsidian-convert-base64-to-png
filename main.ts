@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, TFile, normalizePath } from 'obsidian';
+import { App, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, TFile, normalizePath, base64ToArrayBuffer } from 'obsidian';
 
 interface ConvertBase64ToPNGSettings {
 	outputFolder: string;
@@ -14,16 +14,6 @@ const DEFAULT_SETTINGS: ConvertBase64ToPNGSettings = {
 
 export default class ConvertBase64ToPNGPlugin extends Plugin {
 	settings: ConvertBase64ToPNGSettings;
-
-	// Helper method to convert base64 to binary data
-	base64ToBinary(base64: string): ArrayBuffer {
-		const binaryString = window.atob(base64);
-		const bytes = new Uint8Array(binaryString.length);
-		for (let i = 0; i < binaryString.length; i++) {
-			bytes[i] = binaryString.charCodeAt(i);
-		}
-		return bytes.buffer;
-	}
 
 	async onload() {
 		await this.loadSettings();
@@ -151,8 +141,8 @@ export default class ConvertBase64ToPNGPlugin extends Plugin {
 				const imagePath = normalizePath(`${outputFolderPath}/${filename}`);
 				const relativeImagePath = normalizePath(`${this.settings.outputFolder}/${filename}`);
 
-				// Decode and save the image
-				const binaryData = this.base64ToBinary(match.base64Data);
+				// 使用Obsidian API提供的base64ToArrayBuffer
+				const binaryData = base64ToArrayBuffer(match.base64Data);
 				await this.app.vault.adapter.writeBinary(imagePath, binaryData);
 
 				// Replace in content
@@ -230,8 +220,8 @@ export default class ConvertBase64ToPNGPlugin extends Plugin {
 							const imagePath = normalizePath(`${outputFolderPath}/${filename}`);
 							const relativeImagePath = normalizePath(`${this.settings.outputFolder}/${filename}`);
 
-							// Decode and save the image
-							const binaryData = this.base64ToBinary(match.base64Data);
+							// 使用Obsidian API提供的base64ToArrayBuffer
+							const binaryData = base64ToArrayBuffer(match.base64Data);
 							await this.app.vault.adapter.writeBinary(imagePath, binaryData);
 
 							// Replace in content
@@ -278,10 +268,9 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
 
 		containerEl.empty();
-		containerEl.createEl('h2', {text: 'Convert Base64 to PNG Settings'});
 
 		new Setting(containerEl)
-			.setName('Output Folder')
+			.setName('Output folder')
 			.setDesc('Folder where PNG files will be saved (relative to the note)')
 			.addText(text => text
 				.setPlaceholder('attachments')
@@ -292,7 +281,7 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Auto Convert')
+			.setName('Auto convert')
 			.setDesc('Automatically convert base64 images when pasting')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.autoConvert)
@@ -302,7 +291,7 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Filename Format')
+			.setName('Filename format')
 			.setDesc('Format for generated filenames. Available placeholders: {{date}}, {{index}}, {{type}}')
 			.addText(text => text
 				.setPlaceholder('image-{{date}}-{{index}}')
@@ -329,10 +318,8 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 		kofiLink.setAttribute('target', '_blank');
 		kofiLink.setAttribute('rel', 'noopener');
 
-		// Create an image element for Ko-fi
-		const kofiImg = kofiLink.createEl('img', { cls: 'sponsor-image' });
-		kofiImg.src = 'https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white';
-		kofiImg.alt = 'Support me on Ko-fi';
+		// Embed SVG directly instead of using external file
+		kofiLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="38" viewBox="0 0 82.25 28" role="img" aria-label="KO-FI" class="sponsor-image"><title>KO-FI</title><g shape-rendering="crispEdges"><rect width="82.25" height="28" fill="#f16061"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="100"><image x="9" y="7" width="14" height="14" href="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPktvLWZpPC90aXRsZT48cGF0aCBkPSJNMTEuMzUxIDIuNzE1Yy0yLjcgMC00Ljk4Ni4wMjUtNi44My4yNkMyLjA3OCAzLjI4NSAwIDUuMTU0IDAgOC42MWMwIDMuNTA2LjE4MiA2LjEzIDEuNTg1IDguNDkzIDEuNTg0IDIuNzAxIDQuMjMzIDQuMTgyIDcuNjYyIDQuMTgyaC44M2M0LjIwOSAwIDYuNDk0LTIuMjM0IDcuNjM3LTRhOS41IDkuNSAwIDAgMCAxLjA5MS0yLjMzOEMyMS43OTIgMTQuNjg4IDI0IDEyLjIyIDI0IDkuMjA4di0uNDE1YzAtMy4yNDctMi4xMy01LjUwNy01Ljc5Mi01Ljg3LTEuNTU4LS4xNTYtMi42NS0uMjA4LTYuODU3LS4yMDhtMCAxLjk0N2M0LjIwOCAwIDUuMDkuMDUyIDYuNTcxLjE4MiAyLjYyNC4zMTEgNC4xMyAxLjU4NCA0LjEzIDR2LjM5YzAgMi4xNTYtMS43OTIgMy44NDQtMy44NyAzLjg0NGgtLjkzNWwtLjE1Ni42NDljLS4yMDggMS4wMTMtLjU5NyAxLjgxOC0xLjAzOSAyLjU0Ni0uOTA5IDEuNDI4LTIuNTQ1IDMuMDY0LTUuOTIyIDMuMDY0aC0uODA1Yy0yLjU3MSAwLTQuODMxLS44ODMtNi4wNzgtMy4xOTUtMS4wOS0yLTEuMjk4LTQuMTU1LTEuMjk4LTcuNTA2IDAtMi4xODEuODU3LTMuNDAyIDMuMDEyLTMuNzE0IDEuNTMzLS4yMzMgMy41NTktLjI2IDYuMzktLjI2bTYuNTQ3IDIuMjg3Yy0uNDE2IDAtLjY1LjIzNC0uNjUuNTQ2djIuOTM1YzAgLjMxMS4yMzQuNTQ1LjY1LjU0NSAxLjMyNCAwIDIuMDUxLS43NTQgMi4wNTEtMnMtLjcyNy0yLjAyNi0yLjA1Mi0yLjAyNm0tMTAuMzkuMTgyYy0xLjgxOCAwLTMuMDEzIDEuNDgtMy4wMTMgMy4xNDIgMCAxLjUzMy44NTggMi44NTcgMS45NDkgMy44OTcuNzI3LjcwMSAxLjg3IDEuNDI5IDIuNjQ5IDEuODk2YTEuNDcgMS40NyAwIDAgMCAxLjUwNyAwYy43OC0uNDY3IDEuOTIyLTEuMTk1IDIuNjIzLTEuODk2IDEuMTE3LTEuMDM5IDEuOTc0LTIuMzY0IDEuOTc0LTMuODk3IDAtMS42NjItMS4yNDctMy4xNDItMy4wMzktMy4xNDItMS4wNjUgMC0xLjc5Mi41NDUtMi4zMzggMS4yOTgtLjQ5My0uNzUzLTEuMjQ2LTEuMjk4LTIuMzEyLTEuMjk4Ii8+PC9zdmc+"/><text transform="scale(.1)" x="511.25" y="175" textLength="382.5" fill="#fff" font-weight="bold">KO-FI</text></g></svg>`;
 
 		// Buy Me a Coffee button
 		const bmcLink = buttonsDiv.createEl('a', {
@@ -341,9 +328,14 @@ class ConvertBase64ToPNGSettingTab extends PluginSettingTab {
 		bmcLink.setAttribute('target', '_blank');
 		bmcLink.setAttribute('rel', 'noopener');
 
-		// Create an image element for Buy Me a Coffee
-		const bmcImg = bmcLink.createEl('img', { cls: 'sponsor-image' });
-		bmcImg.src = 'https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png';
-		bmcImg.alt = 'Buy Me A Coffee';
+		// Embed SVG directly instead of using external file
+		bmcLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="38" viewBox="0 0 217 60" class="sponsor-image">
+  <!-- Background -->
+  <rect width="217" height="60" rx="12" fill="#FFDD00"/>
+  <!-- Coffee cup emoji -->
+  <text x="19" y="42" font-size="30">☕️</text>
+  <!-- "Buy me a coffee" text -->
+  <text x="59" y="39" font-family="'Brush Script MT', 'Comic Sans MS', cursive" font-size="28" font-weight="normal" fill="#000000" font-style="italic">Buy me a coffee</text>
+</svg>`;
 	}
 }
